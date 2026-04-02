@@ -1,41 +1,41 @@
-# Duplication — 코드 중복 / 재사용
+# Duplication — Code Duplication / Reuse
 
-## 왜 중요한가
+## Why It Matters
 
-중복 코드는 변경 비용을 곱절로 늘린다. 한 곳을 수정하면 다른 곳도 수정해야 하고, 하나를 놓치면 버그가 된다. 하지만 모든 중복이 나쁜 것은 아니다. 섣부른 추상화보다 약간의 중복이 나은 경우도 있다.
+Duplicated code multiplies the cost of change. When you modify one place, you must modify the others too, and missing one creates a bug. However, not all duplication is bad. Sometimes a bit of duplication is better than a premature abstraction.
 
-## 원칙
+## Principles
 
-- 동일한 코드가 3번 이상 반복되면 추출을 고려한다 (Rule of Three).
-- 2번 반복은 아직 추출하지 않아도 된다. 패턴이 확립될 때까지 기다린다.
-- 코드가 비슷해 보여도 변경 이유가 다르면 중복이 아니다 (우연의 중복).
-- 추상화의 비용(복잡도 증가)이 중복의 비용보다 크면 중복을 유지한다.
+- Consider extraction when the same code is repeated 3 or more times (Rule of Three).
+- Two repetitions don't need extraction yet. Wait until the pattern is established.
+- Even if code looks similar, it's not duplication if the reasons for change are different (accidental duplication).
+- If the cost of abstraction (increased complexity) exceeds the cost of duplication, keep the duplication.
 
-## 체크리스트
+## Checklist
 
-- [ ] 3회 이상 반복되는 동일한 코드 블록
-- [ ] 복사-붙여넣기로 만든 유사한 함수 (파라미터만 다름)
-- [ ] 여러 파일에 걸쳐 동일한 유틸리티 로직
-- [ ] 같은 검증/변환 로직이 여러 곳에 존재
-- [ ] 상수 문자열/설정값이 여러 곳에 하드코딩 (magic-values 참조)
-- [ ] API route handler 전체에 걸쳐 동일한 보일러플레이트(인증, JSON 파싱, 에러 응답) 반복
-- [ ] 공통 유틸리티 함수가 존재함에도 각 호출처에서 인라인 반복 (dead-code 참조)
-- [ ] 에러 응답 파싱 패턴 등 클라이언트 측 동일 로직이 여러 컴포넌트에서 반복
+- [ ] Identical code blocks repeated 3 or more times
+- [ ] Similar functions created by copy-paste (only parameters differ)
+- [ ] Same utility logic across multiple files
+- [ ] Same validation/transformation logic in multiple places
+- [ ] Constant strings/configuration values hardcoded in multiple places (see magic-values reference)
+- [ ] Same boilerplate (auth, JSON parsing, error response) repeated across all API route handlers
+- [ ] Inline repetition despite a common utility function already existing (see dead-code reference)
+- [ ] Client-side identical logic (e.g., error response parsing) repeated across multiple components
 
-## 좋은 예 / 나쁜 예
+## Good Examples / Bad Examples
 
-나쁜 예 — 동일 로직 반복:
+Bad example — identical logic repeated:
 ```
-// 파일 A
+// File A
 const fullName = `${user.firstName} ${user.lastName}`;
 const initials = `${user.firstName[0]}${user.lastName[0]}`;
 
-// 파일 B (동일 로직)
+// File B (same logic)
 const displayName = `${member.firstName} ${member.lastName}`;
 const memberInitials = `${member.firstName[0]}${member.lastName[0]}`;
 ```
 
-좋은 예 — 공통 함수 추출:
+Good example — common function extracted:
 ```
 function formatFullName(person) {
   return `${person.firstName} ${person.lastName}`;
@@ -46,11 +46,11 @@ function getInitials(person) {
 }
 ```
 
-## 안티패턴
+## Anti-patterns
 
-- **섣부른 추상화 (Premature Abstraction)** — 2번 나왔다고 바로 추출하는 것. 패턴이 확립되기 전에 추상화하면 잘못된 경계로 나뉠 수 있다.
-- **과도한 DRY** — 모든 중복을 제거하려다 코드가 오히려 이해하기 어려워지는 것. 읽는 사람이 여러 파일을 넘나들어야 하는 추상화는 중복보다 나쁘다.
-- **우연의 중복 제거** — 현재 코드가 비슷해 보여도 서로 다른 이유로 변경되는 코드를 억지로 합치는 것. 나중에 분리할 때 더 큰 비용이 든다.
-- **상속으로 중복 제거** — 중복 제거만을 위해 상속 계층을 만드는 것. 구성(composition)이 대부분의 경우 더 적절하다.
-- **유틸리티 무시 인라인 반복 (Utility Bypass)** — 공통 함수가 이미 존재하는데 각 호출처에서 인라인으로 동일 로직을 반복 작성하는 것. 유틸리티와 인라인 버전의 동작이 미묘하게 달라져 버그의 원인이 된다.
-- **보일러플레이트 복사-붙여넣기** — API route handler의 인증/파싱/에러 처리 패턴을 매번 복사하는 것. 미들웨어나 wrapper 함수로 추출을 검토한다.
+- **Premature Abstraction** — Extracting immediately after seeing something twice. Abstracting before the pattern is established can lead to wrong boundaries.
+- **Excessive DRY** — Trying to eliminate all duplication can make code harder to understand. An abstraction that forces readers to jump between multiple files is worse than duplication.
+- **Removing Accidental Duplication** — Forcibly merging code that looks similar but changes for different reasons. Separating it later costs more.
+- **Inheritance for Deduplication** — Creating inheritance hierarchies solely to remove duplication. Composition is more appropriate in most cases.
+- **Utility Bypass** — Repeating the same logic inline at each call site despite a common function already existing. This causes subtle behavioral divergence between the utility and inline versions, leading to bugs.
+- **Boilerplate Copy-Paste** — Copying auth/parsing/error handling patterns for every API route handler. Consider extracting into middleware or wrapper functions.

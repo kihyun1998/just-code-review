@@ -1,82 +1,82 @@
 ---
 name: jcr-refactor
-description: "코드 리팩토링 제안. 사용자가 리팩토링, 코드 구조 개선, 코드 정리를 요청할 때 사용. 실제 변경 코드를 포함한 구체적인 리팩토링 방안을 제시."
+description: "Refactoring suggestions. Use when the user requests refactoring, code structure improvement, or code cleanup. Provides concrete refactoring proposals with actual code changes."
 ---
 
-# JCR Refactor — 리팩토링 제안
+# JCR Refactor — Refactoring Suggestions
 
-코드 품질 리뷰(jcr-review)가 "문제를 찾아서 알려주는 것"이라면, 이 스킬은 "실제로 어떻게 고칠지 코드를 제안하는 것"이다.
+If code quality review (jcr-review) is about "finding and reporting problems," this skill is about "suggesting how to actually fix them with code."
 
-## 리팩토링 대상 결정
+## Determining the Refactoring Target
 
-인자가 없으면 `git diff`(unstaged 변경사항)를 기본 대상으로 한다.
+If no arguments are given, `git diff` (unstaged changes) is the default target.
 
-인자가 있으면 다음 규칙으로 판단한다:
+If arguments are provided, determine the target as follows:
 - `--staged` → `git diff --staged`
-- `--branch` → 기본 브랜치 대비 diff (`git diff <base-branch>...HEAD`). 기본 브랜치는 `git symbolic-ref refs/remotes/origin/HEAD`로 자동 감지한다. `.jcr.md`에 `base-branch`가 지정되어 있으면 그것을 우선 사용한다.
-- 파일/폴더 경로 → 해당 경로의 코드를 직접 읽음
+- `--branch` → diff against the base branch (`git diff <base-branch>...HEAD`). The base branch is auto-detected via `git symbolic-ref refs/remotes/origin/HEAD`. If `base-branch` is specified in `.jcr.md`, that takes precedence.
+- File/folder path → read the code at that path directly
 
 ## References
 
-jcr-review의 references를 공유한다. 리팩토링 판단 기준으로 참조한다:
+Shares references with jcr-review. Used as criteria for refactoring decisions:
 
-- `../jcr-review/references/dead-code.md` — 제거할 코드 식별
-- `../jcr-review/references/duplication.md` — 추출/통합 대상 식별
-- `../jcr-review/references/complexity.md` — 분리/단순화 대상 식별
-- `../jcr-review/references/naming.md` — 이름 개선 제안
-- `../jcr-review/references/error-handling.md` — 에러 처리 개선
-- `../jcr-review/references/magic-values.md` — 상수 추출 제안
-- `../jcr-review/references/comments.md` — 주석 정리
-- `../jcr-review/references/style.md` — 스타일 통일
+- `../jcr-review/references/dead-code.md` — identifying code to remove
+- `../jcr-review/references/duplication.md` — identifying extraction/consolidation targets
+- `../jcr-review/references/complexity.md` — identifying separation/simplification targets
+- `../jcr-review/references/naming.md` — suggesting name improvements
+- `../jcr-review/references/error-handling.md` — improving error handling
+- `../jcr-review/references/magic-values.md` — suggesting constant extraction
+- `../jcr-review/references/comments.md` — cleaning up comments
+- `../jcr-review/references/style.md` — unifying style
 
-## 리팩토링 절차
+## Refactoring Procedure
 
-1. `.jcr.md`가 있으면 먼저 읽어서 프로젝트 컨벤션과 제외 패턴을 확인한다.
-2. 대상 코드를 읽고 전체 맥락을 파악한다.
-3. references를 참조하여 개선 가능한 부분을 식별한다.
-4. 각 리팩토링에 대해 before/after 코드를 제시한다.
-5. 리팩토링의 이유와 효과를 설명한다.
+1. If `.jcr.md` exists, read it first to check project conventions and exclusion patterns.
+2. Read the target code and understand the overall context.
+3. Reference the references to identify areas for improvement.
+4. Present before/after code for each refactoring.
+5. Explain the reason and effect of each refactoring.
 
-## 리팩토링 유형
+## Refactoring Types
 
-- **함수 추출** — 긴 함수에서 독립적인 로직을 별도 함수로 분리
-- **변수/상수 추출** — 매직 값이나 복잡한 표현식에 이름 부여
-- **조건 단순화** — 복잡한 조건문을 guard clause, early return 등으로 평탄화
-- **중복 제거** — 반복되는 코드를 공통 함수/모듈로 통합
-- **네이밍 개선** — 더 명확한 이름으로 변경
-- **에러 처리 개선** — 빈 catch, 에러 삼킴 등을 적절한 처리로 변경
-- **죽은 코드 제거** — 사용되지 않는 변수, import, 함수 정리
+- **Extract Function** — Separate independent logic from long functions into their own functions
+- **Extract Variable/Constant** — Give names to magic values or complex expressions
+- **Simplify Conditionals** — Flatten complex conditionals using guard clauses, early returns, etc.
+- **Remove Duplication** — Consolidate repeated code into common functions/modules
+- **Improve Naming** — Change to clearer names
+- **Improve Error Handling** — Replace empty catches, swallowed errors, etc. with proper handling
+- **Remove Dead Code** — Clean up unused variables, imports, functions
 
-## 출력 형식
+## Output Format
 
-반드시 다음 형식을 따른다:
+Must follow this format:
 
 ```
-## 리팩토링 요약
+## Refactoring Summary
 
-- 총 N건의 리팩토링 제안
-- 주요 유형: 유형(건수), ...
+- Total N refactoring suggestions
+- Main types: type(count), ...
 
-## 리팩토링 제안
+## Refactoring Suggestions
 
-### 1. [제목] — `파일경로:라인범위`
+### 1. [Title] — `file_path:line_range`
 
-**이유**: 왜 이 리팩토링이 필요한지
+**Reason**: Why this refactoring is needed
 
 **Before**:
-(현재 코드)
+(current code)
 
 **After**:
-(개선된 코드)
+(improved code)
 
-**효과**: 리팩토링으로 얻는 이점
+**Effect**: Benefits gained from this refactoring
 ```
 
-출력 언어는 사용자의 언어를 따른다.
+Output language follows the user's language.
 
-## 주의사항
+## Guidelines
 
-- 동작을 변경하지 않는 리팩토링만 제안한다. 기능 추가/수정은 이 스킬의 범위가 아니다.
-- 한 번에 최대 5~7건까지 제안한다. 우선순위가 높은 것부터 제시하고, 추가 개선 가능 사항이 있으면 "N건 추가 가능"으로 안내한다.
-- 테스트가 있는 코드는 테스트가 깨지지 않는 범위에서 제안한다.
-- 프로젝트 컨벤션(`.jcr.md`)을 존중한다.
+- Only suggest refactorings that do not change behavior. Feature additions/modifications are outside this skill's scope.
+- Suggest up to 5-7 items at a time. Present the highest priority items first, and if there are additional improvement opportunities, indicate "N more possible."
+- For code with tests, suggest within the scope that won't break tests.
+- Respect project conventions (`.jcr.md`).

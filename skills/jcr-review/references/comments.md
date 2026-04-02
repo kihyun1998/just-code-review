@@ -1,58 +1,58 @@
-# Comments — 주석 품질
+# Comments — Comment Quality
 
-## 왜 중요한가
+## Why It Matters
 
-좋은 주석은 코드가 말하지 못하는 "왜"를 설명한다. 나쁜 주석은 코드와 동기화되지 않아 거짓 정보를 전달하거나, 코드를 그대로 반복하여 잡음만 늘린다. 주석이 없는 것보다 틀린 주석이 더 위험하다.
+Good comments explain the "why" that code cannot express. Bad comments either convey false information by falling out of sync with the code, or merely repeat the code and add noise. A wrong comment is more dangerous than no comment at all.
 
-## 원칙
+## Principles
 
-- 주석은 "왜(why)"를 설명한다. "무엇(what)"은 코드 자체가 말하게 한다.
-- 코드를 그대로 번역한 주석은 쓰지 않는다.
-- 주석이 필요하다고 느끼면, 먼저 코드를 더 명확하게 고칠 수 있는지 생각한다.
-- 주석은 코드와 함께 유지보수한다. 코드를 바꾸면 주석도 바꾼다.
+- Comments explain "why." Let the code itself express "what."
+- Do not write comments that literally translate the code.
+- If you feel a comment is needed, first consider whether you can make the code itself clearer.
+- Maintain comments alongside code. When you change code, update the comments.
 
-## 체크리스트
+## Checklist
 
-- [ ] 코드를 그대로 반복하는 주석 (예: `// i를 1 증가시킨다` → `i++`)
-- [ ] 코드와 내용이 맞지 않는 (오래된/틀린) 주석
-- [ ] 복잡한 비즈니스 로직에 "왜 이렇게 하는지" 설명이 없는 경우
-- [ ] 정규식, 비트 연산 등 난해한 코드에 설명이 없는 경우
-- [ ] 임시 워크어라운드에 이유와 맥락 설명이 없는 경우
-- [ ] TODO/FIXME/HACK 주석에 구체적 맥락 없이 방치된 경우
-- [ ] 함수/클래스의 public API에 문서 주석이 누락된 경우 (라이브러리/SDK인 경우)
-- [ ] 주석 처리된 코드 블록 (dead-code 참조)
-- [ ] eslint-disable / noqa 등 린트 억제 주석에 구체적 사유가 없는 경우
+- [ ] Comments that literally repeat the code (e.g., `// increment i by 1` → `i++`)
+- [ ] Comments that don't match the code (outdated/incorrect comments)
+- [ ] Complex business logic missing an explanation of "why it's done this way"
+- [ ] Cryptic code (regex, bitwise operations, etc.) without explanation
+- [ ] Temporary workarounds without reason and context explanation
+- [ ] TODO/FIXME/HACK comments left without specific context
+- [ ] Missing doc comments on public API of functions/classes (for libraries/SDKs)
+- [ ] Commented-out code blocks (see dead-code reference)
+- [ ] Lint suppression comments (eslint-disable / noqa, etc.) without a specific reason
 
-## 좋은 예 / 나쁜 예
+## Good Examples / Bad Examples
 
-나쁜 예 — 코드를 반복하는 주석:
+Bad example — comment that repeats the code:
 ```
-// 사용자 이름을 가져온다
+// Get the user name
 const userName = getUserName();
 ```
 
-좋은 예 — 주석 불필요, 코드가 충분히 명확:
+Good example — no comment needed, code is clear enough:
 ```
 const userName = getUserName();
 ```
 
-나쁜 예 — 맥락 없는 워크어라운드:
+Bad example — workaround without context:
 ```
-// 임시 수정
+// Temporary fix
 timeout = timeout * 2;
 ```
 
-좋은 예 — 왜 필요한지 설명:
+Good example — explains why it's needed:
 ```
-// 외부 API의 간헐적 타임아웃 이슈(JIRA-1234)로 인해 재시도 여유를 확보
+// Increase retry margin due to intermittent timeout issues with external API (JIRA-1234)
 timeout = timeout * 2;
 ```
 
-## 안티패턴
+## Anti-patterns
 
-- **코드 번역기** — 모든 줄에 주석을 다는 것. 코드를 읽을 수 있는 사람에게 잡음만 된다.
-- **거짓말하는 주석** — 코드를 수정하면서 주석을 갱신하지 않는 것. 가장 위험한 주석 유형이다.
-- **주석으로 나쁜 코드 보상하기** — 복잡한 코드에 긴 주석을 다는 대신, 코드 자체를 리팩토링하는 것이 낫다.
-- **저널 주석** — 파일 상단에 변경 이력을 주석으로 남기는 것. git log가 이 역할을 한다.
-- **닫는 괄호 주석** — `} // end if`, `} // end for` 등. 함수가 너무 길다는 신호이므로 분리를 고려한다.
-- **사유 없는 린트 억제** — `// eslint-disable-next-line @typescript-eslint/no-explicit-any`만 있고 왜 any가 불가피한지 설명이 없는 것. 타입 개선 기회를 놓치게 된다.
+- **Code Translator** — Adding comments to every line. It's just noise for anyone who can read the code.
+- **Lying Comments** — Modifying code without updating comments. The most dangerous type of comment.
+- **Compensating for Bad Code with Comments** — Instead of adding long comments to complex code, refactoring the code itself is better.
+- **Journal Comments** — Leaving change history as comments at the top of a file. `git log` serves this purpose.
+- **Closing Brace Comments** — `} // end if`, `} // end for`, etc. This signals the function is too long; consider splitting it.
+- **Lint Suppression Without Reason** — Having only `// eslint-disable-next-line @typescript-eslint/no-explicit-any` without explaining why `any` is unavoidable. This causes missed opportunities for type improvement.

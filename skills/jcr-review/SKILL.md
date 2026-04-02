@@ -1,114 +1,114 @@
 ---
 name: jcr-review
-description: "코드 품질 리뷰. 사용자가 코드 리뷰, 코드 품질 체크, 코드 점검, 코드 검토를 요청할 때 사용. git diff, 파일, 폴더 단위로 리뷰 가능."
+description: "Code quality review. Use when the user requests code review, code quality check, or code inspection. Can review by git diff, file, or folder."
 ---
 
-# JCR Review — 코드 품질 리뷰
+# JCR Review — Code Quality Review
 
-코드 품질에 집중하는 리뷰 스킬. 보안이나 버그 탐지가 아닌, "이 코드를 더 깔끔하게 만들 수 있는가"에 집중한다.
+A review skill focused on code quality. Not about security or bug detection, but about "can this code be made cleaner?"
 
-## 리뷰 대상 결정
+## Determining the Review Target
 
-인자가 없으면 `git diff`(unstaged 변경사항)를 기본 대상으로 한다.
+If no arguments are given, `git diff` (unstaged changes) is the default target.
 
-인자가 있으면 다음 규칙으로 판단한다:
+If arguments are provided, determine the target as follows:
 - `--staged` → `git diff --staged`
-- `--branch` → 기본 브랜치 대비 diff (`git diff <base-branch>...HEAD`). 기본 브랜치는 `git symbolic-ref refs/remotes/origin/HEAD`로 자동 감지한다. `.jcr.md`에 `base-branch`가 지정되어 있으면 그것을 우선 사용한다.
-- 파일/폴더 경로 → 해당 경로의 코드를 직접 읽어서 리뷰
+- `--branch` → diff against the base branch (`git diff <base-branch>...HEAD`). The base branch is auto-detected via `git symbolic-ref refs/remotes/origin/HEAD`. If `base-branch` is specified in `.jcr.md`, that takes precedence.
+- File/folder path → read and review the code at that path directly
 
-변경사항이 없는 경우 (diff가 비어 있거나 대상 파일이 없는 경우):
+When there are no changes (diff is empty or no target files):
 
 ```
-## 리뷰 요약
+## Review Summary
 
-리뷰 대상 변경사항이 없습니다.
+No changes found to review.
 ```
 
-## 리뷰 제외 대상
+## Excluded from Review
 
-다음은 리뷰하지 않는다:
-- 자동 생성 코드 (`*.generated.*`, `*.g.*`, `*.gen.*`)
-- vendor, node_modules, lock 파일 (`package-lock.json`, `yarn.lock`, `Cargo.lock` 등)
-- 테스트 fixture, snapshot 파일
-- `.jcr.md`에서 명시적으로 제외한 패턴
+The following are not reviewed:
+- Auto-generated code (`*.generated.*`, `*.g.*`, `*.gen.*`)
+- vendor, node_modules, lock files (`package-lock.json`, `yarn.lock`, `Cargo.lock`, etc.)
+- Test fixtures, snapshot files
+- Patterns explicitly excluded in `.jcr.md`
 
-## 프로젝트별 설정
+## Project-Specific Configuration
 
-현재 작업 디렉토리(cwd)에서 `.jcr.md` 파일을 탐색한다. monorepo의 경우 git 저장소 루트에서 찾는다. 없으면 references의 기본 룰만 적용한다.
+Search for a `.jcr.md` file in the current working directory (cwd). For monorepos, look at the git repository root. If not found, only the default rules from references are applied.
 
-`.jcr.md`에서 지원하는 섹션:
-- **base-branch**: 기본 비교 브랜치 (예: `develop`, `master`)
-- **네이밍 컨벤션**: 프로젝트의 네이밍 규칙
-- **무시할 패턴**: 리뷰에서 제외할 파일/디렉토리/상황
-- **스타일 컨벤션**: 코드 스타일 규칙
-- **추가 룰**: 프로젝트 고유의 리뷰 규칙
-- **프로젝트 정보**: 기술 스택 힌트 (선택)
+Supported sections in `.jcr.md`:
+- **base-branch**: Default comparison branch (e.g., `develop`, `master`)
+- **Naming conventions**: Project naming rules
+- **Ignore patterns**: Files/directories/situations to exclude from review
+- **Style conventions**: Code style rules
+- **Additional rules**: Project-specific review rules
+- **Project info**: Tech stack hints (optional)
 
-## 리뷰 절차
+## Review Procedure
 
-1. `.jcr.md`가 있으면 먼저 읽는다 (제외 패턴, 컨벤션 파악).
-2. 대상 코드를 읽는다 (`.jcr.md`의 제외 패턴 반영).
-3. 코드의 언어/프레임워크를 파악한다.
-4. 아래 references 중 대상 코드에 해당하는 것들을 참조하여 리뷰한다 (`.jcr.md` 컨벤션 우선).
-5. 결과를 출력 형식에 맞게 정리한다.
+1. If `.jcr.md` exists, read it first (to understand exclusion patterns and conventions).
+2. Read the target code (applying `.jcr.md` exclusion patterns).
+3. Identify the language/framework of the code.
+4. Review using the relevant references below that apply to the target code (`.jcr.md` conventions take precedence).
+5. Format the results according to the output format.
 
 ## References
 
-리뷰 시 대상 코드의 특성에 맞는 references를 선택적으로 참조한다:
+Selectively reference the appropriate references based on the characteristics of the target code:
 
-- `references/dead-code.md` — 불필요한 변수, 미사용 import, 도달 불가 코드 탐지 시
-- `references/comments.md` — 주석의 정확성, 필요성, 누락 여부 판단 시
-- `references/naming.md` — 변수, 함수, 클래스 네이밍 평가 시
-- `references/duplication.md` — 코드 중복, 재사용 가능 패턴 식별 시
-- `references/complexity.md` — 함수 길이, 분기 복잡도, 책임 분리 판단 시
-- `references/magic-values.md` — 매직 넘버, 하드코딩된 문자열 탐지 시
-- `references/error-handling.md` — 에러 처리 패턴 평가 시
-- `references/style.md` — 코드 스타일 일관성 확인 시
+- `references/dead-code.md` — when detecting unnecessary variables, unused imports, unreachable code
+- `references/comments.md` — when evaluating comment accuracy, necessity, or missing comments
+- `references/naming.md` — when evaluating variable, function, class naming
+- `references/duplication.md` — when identifying code duplication or reusable patterns
+- `references/complexity.md` — when evaluating function length, branching complexity, separation of concerns
+- `references/magic-values.md` — when detecting magic numbers or hardcoded strings
+- `references/error-handling.md` — when evaluating error handling patterns
+- `references/style.md` — when checking code style consistency
 
-## 심각도 기준
+## Severity Criteria
 
-- **error** — 명백한 품질 문제. 반드시 수정해야 한다. (예: 미사용 변수, 빈 catch 블록, 완전히 중복된 코드)
-- **warning** — 개선하면 좋은 부분. (예: 모호한 네이밍, 과도한 함수 길이, 매직 넘버)
-- **info** — 참고 사항. 선택적으로 개선. (예: 추출 가능한 공통 패턴, 스타일 불일치)
+- **error** — Clear quality issue. Must be fixed. (e.g., unused variables, empty catch blocks, fully duplicated code)
+- **warning** — Could be improved. (e.g., vague naming, excessive function length, magic numbers)
+- **info** — For reference. Optional improvement. (e.g., extractable common patterns, style inconsistencies)
 
-## 출력 형식
+## Output Format
 
-반드시 다음 형식을 따른다:
-
-```
-## 리뷰 요약
-
-- 총 N건 (error: X, warning: Y, info: Z)
-- 주요 영역: 카테고리(건수), ...
-
-## 리뷰 결과
-
-### [카테고리명]
-- [심각도] `파일경로:라인번호` - 문제 설명
-  → 개선 제안
-```
-
-이슈가 없는 경우:
+Must follow this format:
 
 ```
-## 리뷰 요약
+## Review Summary
 
-리뷰 대상 코드에서 특별한 품질 이슈가 발견되지 않았습니다.
+- Total N issues (error: X, warning: Y, info: Z)
+- Main areas: category(count), ...
+
+## Review Results
+
+### [Category Name]
+- [severity] `file_path:line_number` - Issue description
+  → Improvement suggestion
 ```
 
-출력 언어는 사용자의 언어를 따른다.
+When no issues are found:
 
-## 대용량 코드 처리
+```
+## Review Summary
 
-diff나 대상 파일이 수백 줄 이상일 때:
-- error 심각도 이슈를 우선 보고한다.
-- 변경이 집중된 영역(핫스팟)을 우선 리뷰한다.
-- 모든 이슈를 나열하기보다 대표적인 패턴을 보여주고, 동일 패턴이 반복되면 "N건 추가 발견"으로 요약한다.
+No notable quality issues were found in the reviewed code.
+```
 
-## 주의사항
+Output language follows the user's language.
 
-- 사소한 nitpick보다 실질적인 품질 개선에 집중한다.
-- 프로젝트 컨벤션(`.jcr.md`에 명시된 룰)이 references의 기본 룰과 충돌하면 프로젝트 컨벤션을 우선한다. `.jcr.md`에 명시되지 않은 사항은 기본 룰을 적용한다.
-- 코드의 의도를 파악한 후 리뷰한다. 맥락 없이 기계적으로 룰을 적용하지 않는다.
-- 각 이슈에 대해 "왜 문제인지"를 간결하게 설명한다.
-- 동일 이슈가 여러 카테고리에 해당하면, 가장 적합한 하나의 카테고리에서만 보고한다. 중복 보고하지 않는다.
+## Handling Large Code
+
+When the diff or target files are hundreds of lines or more:
+- Report error-severity issues first.
+- Prioritize reviewing areas where changes are concentrated (hotspots).
+- Rather than listing every issue, show representative patterns and summarize repeated patterns as "N additional instances found."
+
+## Guidelines
+
+- Focus on substantive quality improvements over trivial nitpicks.
+- If project conventions (rules specified in `.jcr.md`) conflict with the default rules in references, project conventions take precedence. For matters not specified in `.jcr.md`, apply the default rules.
+- Understand the code's intent before reviewing. Do not mechanically apply rules without context.
+- For each issue, concisely explain "why it's a problem."
+- If the same issue falls under multiple categories, report it only under the single most appropriate category. Do not duplicate reports.

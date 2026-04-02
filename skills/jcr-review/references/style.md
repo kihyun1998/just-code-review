@@ -1,33 +1,33 @@
-# Style — 코드 스타일 일관성
+# Style — Code Style Consistency
 
-## 왜 중요한가
+## Why It Matters
 
-스타일 불일치는 읽는 사람의 인지 부하를 높인다. 같은 코드베이스에서 어떤 곳은 camelCase, 어떤 곳은 snake_case를 쓰면 매번 "이 파일의 컨벤션이 뭐지?"를 생각해야 한다. 스타일은 맞고 틀림의 문제가 아니라 일관성의 문제다.
+Style inconsistency increases cognitive load for readers. If some parts of the same codebase use camelCase while others use snake_case, you have to think "what's the convention in this file?" every time. Style is not about right or wrong — it's about consistency.
 
-## 원칙
+## Principles
 
-- 프로젝트 내 기존 스타일을 따른다. 자신만의 스타일을 강요하지 않는다.
-- 린터/포매터 설정이 있으면 그것이 진실의 원천이다.
-- 스타일 변경은 기능 변경과 별도 커밋으로 분리한다.
-- 새 프로젝트라면 언어/프레임워크의 공식 스타일 가이드를 따른다.
+- Follow the existing style within the project. Don't impose your own style.
+- If linter/formatter configuration exists, that is the source of truth.
+- Separate style changes from functional changes into different commits.
+- For new projects, follow the language/framework's official style guide.
 
-## 체크리스트
+## Checklist
 
-- [ ] 네이밍 케이스 불일치 (camelCase / snake_case / PascalCase 혼용)
-- [ ] 들여쓰기 불일치 (탭 / 스페이스, 2칸 / 4칸 혼용)
-- [ ] 문자열 따옴표 불일치 (작은따옴표 / 큰따옴표 혼용)
-- [ ] import 순서/그룹핑 불일치
-- [ ] 세미콜론 사용 불일치
-- [ ] 빈 줄 사용 불일치 (함수 사이, 블록 사이)
-- [ ] 중괄호 스타일 불일치 (같은 줄 / 다음 줄)
-- [ ] 비교 연산자 불일치 (`==` / `===` 혼용)
-- [ ] 파일 구조 불일치 (같은 종류의 파일이 다른 구조로 작성됨)
-- [ ] API 에러 응답 메시지의 언어가 일관되지 않은 경우 (일부 한국어, 일부 영어)
-- [ ] i18n 처리 방식 불일치 (일부는 `t()` 함수, 일부는 인라인 삼항 연산자)
+- [ ] Naming case inconsistency (mixing camelCase / snake_case / PascalCase)
+- [ ] Indentation inconsistency (mixing tabs / spaces, 2-space / 4-space)
+- [ ] String quote inconsistency (mixing single quotes / double quotes)
+- [ ] Import order/grouping inconsistency
+- [ ] Semicolon usage inconsistency
+- [ ] Blank line usage inconsistency (between functions, between blocks)
+- [ ] Brace style inconsistency (same line / next line)
+- [ ] Comparison operator inconsistency (mixing `==` / `===`)
+- [ ] File structure inconsistency (same type of files written with different structures)
+- [ ] Inconsistent language in API error response messages (some in one language, some in another)
+- [ ] Inconsistent i18n approach (some using `t()` function, some using inline ternary operators)
 
-## 좋은 예 / 나쁜 예
+## Good Examples / Bad Examples
 
-나쁜 예 — 같은 파일에서 스타일 혼용:
+Bad example — mixed styles in the same file:
 ```
 const user_name = getUserName();
 const userAge = getAge();
@@ -41,7 +41,7 @@ if (isActive === false) {
 }
 ```
 
-좋은 예 — 일관된 스타일:
+Good example — consistent style:
 ```
 const userName = getUserName();
 const userAge = getAge();
@@ -55,11 +55,11 @@ if (!isActive) {
 }
 ```
 
-## 안티패턴
+## Anti-patterns
 
-- **스타일 전쟁** — 팀원마다 다른 스타일을 주장하는 것. 린터/포매터로 자동화하여 논쟁을 제거한다.
-- **기능 커밋에 스타일 변경 섞기** — diff가 오염되어 실제 변경사항을 알아보기 어려워진다.
-- **린터 규칙 무시/비활성화** — `// eslint-disable`, `# noqa` 등을 남발하는 것. 규칙을 비활성화해야 한다면 이유를 주석으로 남긴다.
-- **과도한 스타일 지적** — 리뷰에서 스타일만 지적하는 것. 자동화할 수 있는 것은 도구에 맡기고, 리뷰어는 로직에 집중한다.
-- **i18n 처리 방식 혼용 (Inconsistent i18n Strategy)** — 같은 코드베이스에서 `t("key", locale)` 함수와 `ko ? "한국어" : "English"` 삼항 연산자를 혼용하는 것. 하나의 방식으로 통일해야 유지보수가 편하다.
-- **에러 메시지 언어 혼용** — 같은 API 계층에서 검증 에러는 영어, 비즈니스 에러는 한국어처럼 언어가 섞이는 것. 에러 메시지 언어를 통일하거나 i18n을 적용한다.
+- **Style Wars** — Team members insisting on different styles. Automate with linters/formatters to eliminate debates.
+- **Mixing Style Changes with Feature Commits** — Pollutes the diff, making it hard to identify actual changes.
+- **Ignoring/Disabling Linter Rules** — Overusing `// eslint-disable`, `# noqa`, etc. If you must disable a rule, leave a comment explaining why.
+- **Excessive Style Nitpicking** — Only pointing out style issues in reviews. Delegate automatable concerns to tools, and let reviewers focus on logic.
+- **Inconsistent i18n Strategy** — Mixing `t("key", locale)` functions and `isKorean ? "Korean text" : "English text"` ternary operators in the same codebase. Unify to a single approach for easier maintenance.
+- **Mixed Error Message Languages** — Validation errors in one language and business errors in another within the same API layer. Unify the error message language or apply i18n.

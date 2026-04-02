@@ -1,45 +1,45 @@
-# Dead Code — 불필요한 코드 탐지
+# Dead Code — Unnecessary Code Detection
 
-## 왜 중요한가
+## Why It Matters
 
-죽은 코드는 읽는 사람을 혼란스럽게 한다. "이게 왜 있지? 나중에 쓰려고 남긴 건가?"라는 불필요한 질문을 유발하고, 리팩토링 시 실수로 건드려 버그를 만들 수 있다. 코드베이스의 신호 대 잡음 비율을 떨어뜨린다.
+Dead code confuses readers. It raises unnecessary questions like "why is this here? Was it left for future use?" and can accidentally introduce bugs when touched during refactoring. It lowers the signal-to-noise ratio of the codebase.
 
-## 원칙
+## Principles
 
-- 사용되지 않는 코드는 삭제한다. 필요하면 git에서 복원할 수 있다.
-- "나중에 쓸 수도 있으니까"는 남겨둘 이유가 되지 않는다.
-- 주석으로 감싼 코드(commented-out code)는 죽은 코드다.
+- Delete unused code. It can be recovered from git if needed.
+- "We might use it later" is not a reason to keep it.
+- Commented-out code is dead code.
 
-## 체크리스트
+## Checklist
 
-- [ ] 선언 후 사용되지 않는 변수
-- [ ] 호출되지 않는 함수/메서드
-- [ ] import했지만 사용하지 않는 모듈
-- [ ] 도달 불가능한 코드 (return/throw 뒤의 코드)
-- [ ] 주석 처리된 코드 블록
-- [ ] 사용되지 않는 함수 파라미터
-- [ ] 빈 파일 또는 빈 클래스/모듈
-- [ ] 더 이상 참조되지 않는 상수/enum 값
-- [ ] 조건이 항상 true/false인 분기의 반대편 코드
-- [ ] 정의된 유틸리티 함수가 프로젝트 어디에서도 호출되지 않는 경우 (공통 함수를 만들어놓고 인라인으로 반복 작성)
+- [ ] Variables declared but never used
+- [ ] Functions/methods that are never called
+- [ ] Imported but unused modules
+- [ ] Unreachable code (code after return/throw)
+- [ ] Commented-out code blocks
+- [ ] Unused function parameters
+- [ ] Empty files or empty classes/modules
+- [ ] Constants/enum values that are no longer referenced
+- [ ] Code in the opposite branch of a condition that is always true/false
+- [ ] Defined utility functions not called anywhere in the project (common functions created but logic duplicated inline)
 
-## 좋은 예 / 나쁜 예
+## Good Examples / Bad Examples
 
-나쁜 예:
+Bad example:
 ```
 const temp = calculateValue();
 const result = otherFunction();
 return result;
-// temp는 사용되지 않음
+// temp is never used
 ```
 
-좋은 예:
+Good example:
 ```
 const result = otherFunction();
 return result;
 ```
 
-나쁜 예:
+Bad example:
 ```
 // function oldHandler(req, res) {
 //   res.send("old");
@@ -50,17 +50,17 @@ function newHandler(req, res) {
 }
 ```
 
-좋은 예:
+Good example:
 ```
 function newHandler(req, res) {
   res.send("new");
 }
 ```
 
-## 안티패턴
+## Anti-patterns
 
-- **"혹시 몰라서" 남겨두기** — git history가 있으므로 과감히 삭제한다.
-- **TODO 주석과 함께 남긴 죽은 코드** — TODO는 남기되, 죽은 코드는 삭제한다. TODO에 무엇을 구현할지 텍스트로 설명하면 충분하다.
-- **디버깅용 console.log/print** — 디버깅이 끝나면 반드시 제거한다.
-- **미사용 파라미터를 _로 시작하는 이름으로 유지** — 언어 컨벤션에 따라 허용되기도 하지만, 파라미터 자체가 불필요하다면 시그니처에서 제거하는 것이 맞다.
-- **유틸리티 함수 방치 (Utility Bypass)** — 공통 유틸리티 함수를 만들어놓고 실제로는 사용하지 않으며, 각 호출 지점에서 동일 로직을 인라인으로 반복 작성하는 것. 유틸리티가 죽은 코드가 되거나, 인라인 버전과 동작이 달라지는 원인이 된다.
+- **"Just in Case" Keeping** — Git history exists, so delete boldly.
+- **Dead Code Left with TODO Comments** — Keep the TODO, but delete the dead code. A text description of what to implement in the TODO is sufficient.
+- **Debugging console.log/print** — Always remove after debugging is complete.
+- **Keeping Unused Parameters with _ Prefix** — While allowed by some language conventions, if the parameter itself is unnecessary, it should be removed from the signature.
+- **Utility Bypass** — Creating common utility functions but never using them, instead repeating the same logic inline at each call site. This causes the utility to become dead code, or the inline versions to diverge in behavior.
