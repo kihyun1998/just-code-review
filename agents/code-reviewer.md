@@ -6,7 +6,6 @@ disallowedTools: Write, Edit
 skills: jcr-review, jcr-refactor
 model: sonnet
 effort: high
-maxTurns: 10
 color: blue
 ---
 
