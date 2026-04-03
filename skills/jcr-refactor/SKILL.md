@@ -80,3 +80,4 @@ Output language follows the user's language.
 - Suggest up to 5-7 items at a time. Present the highest priority items first, and if there are additional improvement opportunities, indicate "N more possible."
 - For code with tests, suggest within the scope that won't break tests.
 - Respect project conventions (`.jcr.md`).
+- When suggesting refactorings, consider potential overflow issues (integer overflow, buffer overflow, array index out-of-bounds, etc.). Ensure suggested code changes do not introduce or overlook overflow risks.

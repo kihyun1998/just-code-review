@@ -112,3 +112,4 @@ When the diff or target files are hundreds of lines or more:
 - Understand the code's intent before reviewing. Do not mechanically apply rules without context.
 - For each issue, concisely explain "why it's a problem."
 - If the same issue falls under multiple categories, report it only under the single most appropriate category. Do not duplicate reports.
+- When suggesting improvements, consider potential overflow issues (integer overflow, buffer overflow, array index out-of-bounds, etc.). If a refactoring or improvement could introduce or overlook an overflow risk, flag it explicitly.
