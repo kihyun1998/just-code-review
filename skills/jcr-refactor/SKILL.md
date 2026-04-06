@@ -28,6 +28,7 @@ Shares references with jcr-review. Used as criteria for refactoring decisions:
 - `../jcr-review/references/magic-values.md` — suggesting constant extraction
 - `../jcr-review/references/comments.md` — cleaning up comments
 - `../jcr-review/references/style.md` — unifying style
+- `../jcr-review/references/flutter-dart.md` — Flutter/Dart specific refactoring (widget decomposition, state management, async patterns)
 
 ## Refactoring Procedure
 

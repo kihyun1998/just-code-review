@@ -64,6 +64,7 @@ Selectively reference the appropriate references based on the characteristics of
 - `references/magic-values.md` — when detecting magic numbers or hardcoded strings
 - `references/error-handling.md` — when evaluating error handling patterns
 - `references/style.md` — when checking code style consistency
+- `references/flutter-dart.md` — when reviewing Flutter/Dart code (widget design, state management, async patterns, Dart conventions)
 
 ## Severity Criteria
 
